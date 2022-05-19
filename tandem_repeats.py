@@ -103,6 +103,8 @@ def get_tandem_repeats(
     min_repeat_count,
     min_uniq_nt,
     min_region_len,
+    up_len,
+    down_len,
     tandem_repeat_match_result,
 ):
     tandem_repeat_match_result = tandem_repeat_match_result[2:]
@@ -172,7 +174,6 @@ def get_tandem_repeats(
                 and tandem_region_len >= min_region_len
                 and tandem_repeat_uniq_nts_count >= min_uniq_nt
             ):
-
                 repeat_num += 1
 
                 tandem_repeat_seq_gc = GC(tandem_repeat_seq)
@@ -180,12 +181,8 @@ def get_tandem_repeats(
                     tandem_repeat_seq
                 )
 
-                up_region_seq = seq[
-                    parent_up_start - 1 - args.up_len : parent_up_start - 1
-                ]
-                down_region_seq = seq[
-                    tandem_region_end : tandem_region_end + args.down_len
-                ]
+                up_region_seq = seq[parent_up_start - 1 - up_len : parent_up_start - 1]
+                down_region_seq = seq[tandem_region_end : tandem_region_end + down_len]
 
                 tandem_info = {
                     "repeat_num": repeat_num,
@@ -218,6 +215,8 @@ def run_get_tandem_repeats(
     min_repeat_count,
     min_uniq_nt,
     min_region_len,
+    up_len,
+    down_len,
     id_seq,
 ):
     tandem_repeat_match_result = run_tandem_repeat_match(
@@ -230,6 +229,8 @@ def run_get_tandem_repeats(
         min_repeat_count,
         min_uniq_nt,
         min_region_len,
+        up_len,
+        down_len,
         tandem_repeat_match_result,
     )
 
@@ -244,6 +245,8 @@ def parallel_run_get_tandem_repeats(
     min_repeat_count,
     min_uniq_nt,
     min_region_len,
+    up_len,
+    down_len,
 ):
 
     partial_run_get_tandem_repeats = functools.partial(
@@ -253,6 +256,8 @@ def parallel_run_get_tandem_repeats(
         min_repeat_count,
         min_uniq_nt,
         min_region_len,
+        up_len,
+        down_len,
     )
 
     with ProcessPoolExecutor(procs) as executor:
@@ -419,6 +424,8 @@ def main():
         args.min_repeat_count,
         args.min_uniq_nt,
         args.min_region_len,
+        args.up_len,
+        args.down_len,
     )
 
     write_tandem_output(tandem_results)
